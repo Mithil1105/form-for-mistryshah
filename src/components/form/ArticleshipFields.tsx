@@ -12,7 +12,7 @@ const ArticleshipFields = ({ formData, errors, onChange }: FieldProps) => {
       </div>
       <div>
         <label className={labelClasses}>Whether transfer case? <span className="text-destructive">*</span></label>
-        <div className="flex gap-1 mt-1.5 max-w-xs">
+        <div id="is_transfer_case" className="flex gap-1 mt-1.5 max-w-xs">
           {["Yes", "No"].map((v) => (
             <button key={v} type="button" onClick={() => onChange({ target: { name: "is_transfer_case", value: v } } as any)}
               className={cn("flex-1 py-2.5 rounded-lg text-sm font-medium border transition-all duration-200",

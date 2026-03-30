@@ -25,7 +25,27 @@ const ApplicationForm = () => {
     return 2;
   };
 
-  const validate = (): boolean => {
+  const scrollToField = (field: string) => {
+    try {
+      const el =
+        document.getElementById(field) ||
+        document.querySelector<HTMLElement>(`[name="${field}"]`) ||
+        document.querySelector<HTMLElement>(`[data-field="${field}"]`);
+
+      if (!el) return;
+
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      // Only focus if it's focusable (inputs, buttons, etc.)
+      const focusFn = (el as HTMLElement).focus;
+      if (typeof focusFn === "function") {
+        (el as HTMLElement).focus();
+      }
+    } catch {
+      // No-op: scrolling is best-effort.
+    }
+  };
+
+  const validate = (): FormErrors | null => {
     const e: FormErrors = {};
     if (!formData.name.trim()) e.name = "Name is required";
     if (!formData.surname.trim()) e.surname = "Surname is required";
@@ -58,7 +78,7 @@ const ApplicationForm = () => {
     }
 
     setErrors(e);
-    return Object.keys(e).length === 0;
+    return Object.keys(e).length === 0 ? null : e;
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -91,7 +111,12 @@ const ApplicationForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validate()) return;
+    const validationErrors = validate();
+    if (validationErrors) {
+      const firstKey = Object.keys(validationErrors)[0];
+      if (firstKey) scrollToField(firstKey);
+      return;
+    }
     setIsSubmitting(true);
 
     try {
@@ -168,19 +193,25 @@ const ApplicationForm = () => {
       if (insertError) throw insertError;
 
       try {
+        console.log("invoke send-application-email payload", {
+          hasResume: typeof resumeUrl === "string" && resumeUrl.length > 0,
+          resumeUrl: resumeUrl ? `${resumeUrl.slice(0, 40)}...` : null,
+          keys: Object.keys(formData),
+          gender: formData.gender,
+          date_of_birth: formData.date_of_birth,
+          permanent_address: formData.permanent_address,
+          current_address: formData.current_address,
+          reference: formData.reference,
+          application_type: formData.application_type,
+        });
         await supabase.functions.invoke("send-application-email", {
           body: {
-            name: `${formData.name} ${formData.surname}`.trim(),
-            email: formData.email.trim(),
-            contact_no: formData.contact_no.trim(),
-            application_type: formData.application_type,
-            area_of_interest: formData.area_of_interest || null,
-            is_qualified_ca: formData.is_qualified_ca || null,
-            is_transfer_case: formData.is_transfer_case || null,
+            ...formData,
+            resume_url: resumeUrl || null,
           },
         });
-      } catch {
-        console.warn("Email notification failed, but application was saved.");
+      } catch (err) {
+        console.error("Email notification failed:", err);
       }
 
       setIsSubmitted(true);

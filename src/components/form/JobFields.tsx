@@ -26,7 +26,7 @@ const JobFields = ({ formData, errors, onChange, onFieldChange }: Props) => {
           <h3 className={sectionHeadingClasses}>Professional Details</h3>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
+          <div id="marital_status">
             <label className={labelClasses}>Marital Status <span className="text-destructive">*</span></label>
             <div className="flex gap-1 mt-1.5">
               {["Married", "Unmarried"].map((s) => (
@@ -38,7 +38,7 @@ const JobFields = ({ formData, errors, onChange, onFieldChange }: Props) => {
             </div>
             {errors.marital_status && <p className={errorClasses}>{errors.marital_status}</p>}
           </div>
-          <div>
+          <div id="is_qualified_ca">
             <label className={labelClasses}>Qualified Chartered Accountant? <span className="text-destructive">*</span></label>
             <div className="flex gap-1 mt-1.5">
               {["Yes", "No"].map((v) => (

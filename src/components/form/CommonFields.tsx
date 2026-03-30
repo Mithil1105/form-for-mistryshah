@@ -72,6 +72,7 @@ const CommonFields = ({ formData, errors, onChange, onDateChange }: Props) => {
           <Popover open={dobOpen} onOpenChange={setDobOpen}>
             <PopoverTrigger asChild>
               <Button
+                id="date_of_birth"
                 variant="outline"
                 className={cn(
                   "w-full justify-start text-left font-normal h-[42px] text-sm hover:border-primary/30",
@@ -118,7 +119,7 @@ const CommonFields = ({ formData, errors, onChange, onDateChange }: Props) => {
           <label className={labelClasses}>
             Gender <span className="text-destructive">*</span>
           </label>
-          <div className="flex gap-1 mt-1.5">
+          <div id="gender" className="flex gap-1 mt-1.5">
             {["Male", "Female"].map((g) => (
               <button
                 key={g}

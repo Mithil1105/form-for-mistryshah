@@ -15,7 +15,7 @@ const ApplicationTypeSelector = ({ value, error, onChange }: Props) => {
   ];
 
   return (
-    <div className={sectionDividerClasses}>
+    <div className={sectionDividerClasses} id="application_type">
       <div className="form-section">
         <div className="form-section-header">
           <div className="form-section-icon"><ChevronRight size={16} /></div>
